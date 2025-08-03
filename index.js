@@ -21,3 +21,10 @@ const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_KEY
 );
+
+const richMenuIds = require('./richmenu-ids.json');
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`LINE bot is running on port ${port}`);
+});
