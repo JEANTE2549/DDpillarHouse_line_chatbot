@@ -10,7 +10,7 @@ const uploadMenus = async () => {
   const results = {};
   for (const [key, menu] of Object.entries(richMenus)) {
     const richMenuId = await client.createRichMenu(menu);
-    const imagePath = `RM image/${key}.png`; 
+    const imagePath = `richmenu-image/${key}.png`; 
     const stream = fs.createReadStream(imagePath);
     await client.setRichMenuImage(richMenuId, stream, 'image/png');
     results[key] = richMenuId;

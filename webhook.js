@@ -1,16 +1,28 @@
-const fs = require('fs');
-const path = require('path');
-const line = require('@line/bot-sdk');
-const { createClient } = require('@supabase/supabase-js');
+const { Client } = require('@line/bot-sdk');
 
-const richMenuIds = JSON.parse(
-  fs.readFileSync(path.join(__dirname, 'richmenu-ids.json'))
-);
+const client = new Client({
+  channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
+});
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_KEY
-);
+module.exports = async function (req, res) {
+  Promise
+    .all(req.body.events.map(handleEvent))
+    .then((result) => res.json(result))
+    .catch((err) => {
+      console.error('Error handling events:', err);
+      res.status(500).end();
+    });
+};
 
-module.exports = (config) => {
-  const client = new line.Client(config);}
+async function handleEvent(event) {
+  if (event.type !== 'message' || event.message.type !== 'text') {
+    return Promise.resolve(null);
+  }
+
+  const userMessage = event.message.text;
+
+  return client.replyMessage(event.replyToken, {
+    type: 'text',
+    text: `You said: ${userMessage}`,
+  });
+}
